@@ -5,6 +5,9 @@ import com.example.demo.timeblock.dto.TimeBlockRequest;
 import com.example.demo.timeblock.dto.TimeBlockResponse;
 import com.example.demo.timeblock.dto.TimelineResponse;
 import com.example.demo.timeblock.model.TimeBlockStatus;
+import com.example.demo.timeblock.pattern.dto.PatternInstanceResponse;
+import com.example.demo.timeblock.pattern.dto.PatternRequest;
+import com.example.demo.timeblock.pattern.dto.PatternResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -17,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -118,6 +122,47 @@ class TimeBlockControllerIntegrationTest {
 
 		assertThat(patch.getStatusCode()).isEqualTo(HttpStatus.OK);
 		assertThat(patch.getBody()).isNotNull();
+	}
+
+	@Test
+	@DisplayName("previews pattern instances")
+	void previewPatternInstances() {
+		LocalDate date = LocalDate.now();
+		PatternRequest request = new PatternRequest(
+				"Morning loop",
+				"#CCC",
+				"sun",
+				LocalTime.of(8, 0),
+				LocalTime.of(9, 0),
+				Set.of(date.getDayOfWeek()),
+				true,
+				"Pattern note"
+		);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.set(USER_HEADER, "pattern-user");
+
+		ResponseEntity<PatternResponse> created = restTemplate.exchange(
+				uri("/api/patterns"),
+				HttpMethod.POST,
+				new HttpEntity<>(request, headers),
+				PatternResponse.class
+		);
+
+		assertThat(created.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(created.getBody()).isNotNull();
+
+		ResponseEntity<PatternInstanceResponse[]> preview = restTemplate.exchange(
+				uri("/api/patterns/" + created.getBody().id() + "/instances?date=" + date),
+				HttpMethod.GET,
+				new HttpEntity<>(headers),
+				PatternInstanceResponse[].class
+		);
+
+		assertThat(preview.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(preview.getBody()).isNotNull();
+		assertThat(preview.getBody()).hasSize(1);
+		assertThat(preview.getBody()[0].isException()).isFalse();
 	}
 
 	private String uri(String path) {

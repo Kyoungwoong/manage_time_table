@@ -130,3 +130,21 @@
 - Authentication strategy is noted (email/social) but implementation detail is deferred.  
 - Follow PROBLEM.md order (problem → target → concept → features → UX → scope → roadmap) to keep plan sequentially aligned.  
 - The MVP explicitly excludes notifications, collaboration, and timers, as noted in the brief.  
+
+## 8. Repeat Pattern Manager Extension
+
+- **Goal**: Persist reusable weekly templates (`RepeatPattern`) plus exceptions (`RepeatPatternException`) so users can sketch recurring routines without toggling every day.
+- **Data model**:
+  - `RepeatPattern`: `id`, `userId`, `name`, `color`, `icon`, weekday mask (bitset/enum), `startTime`, `endTime`, `isActive`, `defaultNotes`, `createdAt`, `updatedAt`.
+  - `RepeatPatternException`: `patternId`, `date`, `reason`.
+- **Services**:
+  - `PatternService`: CRUD, validation (startBeforeEnd, weekday mask non-empty), exception management.
+  - `RepeatExpansionService`: given a date/date range, load active patterns, skip exceptions/conflicting manual blocks, return DTOs flagged as pattern-generated.
+- **REST endpoints**:
+  1. `POST /api/patterns` (create pattern)
+  2. `GET /api/patterns` (list user patterns)
+  3. `POST /api/patterns/{id}/exceptions` (add exception)
+  4. `DELETE /api/patterns/{id}/exceptions/{date}` (remove exception)
+  5. `GET /api/patterns/{id}/instances?date=YYYY-MM-DD` (preview generated blocks for a date)
+- **Timeline integration**: timeline GET includes peeked pattern instances (unpersisted) with `isPatternGenerated=true`, `patternId`, `status=PLANNED`.
+- **Testing focus**: pattern creation validation, exception handling, preview output, integration with timeline response.

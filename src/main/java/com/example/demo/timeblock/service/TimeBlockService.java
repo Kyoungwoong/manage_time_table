@@ -4,12 +4,13 @@ import com.example.demo.timeblock.dto.*;
 import com.example.demo.timeblock.entity.TimeBlock;
 import com.example.demo.timeblock.exception.TimeBlockConflictException;
 import com.example.demo.timeblock.model.TimeBlockStatus;
+import com.example.demo.timeblock.pattern.dto.PatternInstanceResponse;
+import com.example.demo.timeblock.pattern.service.RepeatExpansionService;
 import com.example.demo.timeblock.repository.TimeBlockRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 public class TimeBlockService {
 
 	private final TimeBlockRepository repository;
+	private final RepeatExpansionService expansionService;
 
 	@Transactional
 	public TimeBlockResponse createBlock(String userId, LocalDate date, TimeBlockRequest request) {
@@ -49,7 +51,8 @@ public class TimeBlockService {
 				.collect(Collectors.toList());
 
 		RecapMetrics recap = computeRecap(blocks);
-		return new TimelineResponse(responses, recap);
+		List<PatternInstanceResponse> patterns = expansionService.previewForDate(userId, date);
+		return new TimelineResponse(responses, recap, patterns);
 	}
 
 	@Transactional
