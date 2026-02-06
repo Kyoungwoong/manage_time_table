@@ -1,33 +1,47 @@
 ---
 name: git-workflow
-description: Git Issue, Commit, Branch, Push 규칙을 정의하는 workflow skill
-version: 1.0
+description: Git Issue, Commit, Branch, Push, Pull Request 규칙을 정의하는 workflow skill
+version: 1.1
+license: MIT
+compatibility: GitHub repositories using git CLI and GitHub MCP
+metadata:
+   category: workflow
+   priority: high
+   agent-safe: true
+allowed-tools: git github-mcp
 ---
 
 # Git Workflow Skill
 
 ## 1. Purpose
-This document defines the Git-based collaborative workflow used in the project.  
-The purpose is to standardize Issue Management, Commit Message Rules, Branch Strategy, and Push/PR procedures.
+
+This document defines the **mandatory Git workflow** used in this project.  
+It standardizes Issue management, Commit messages, Branch strategy,
+and Push / Pull Request procedures.
+
+This skill MUST be followed by **all humans and AI agents**.
 
 ---
 
 ## 2. Scope
-- GitHub-based projects
-- Applicable to both personal development and team collaboration
-- Mandatory for all code change operations
+
+- GitHub-based repositories
+- Personal and team development
+- All code changes, including tests and configuration
 
 ---
 
 ## 3. Issue Management Rules
 
 ### 3.1 Issue Title Convention
-- MUST: Follow the format below
-```
+
+- MUST: Use the following format
+
+```text
 [Feature|Bug|Refactor|Docs|Chore] Brief description
 ```
 Example:
-```
+```text
 [Feature] Adding a user login feature
 [Bug] Correct authentication token expiration error
 ```
@@ -48,8 +62,7 @@ Issue The body must include the following items.
 
 ### 4.1 Commit Message Format
 - MUST: Follow the following format
-
-```
+```text
 <type>(<scope>): <subject>
 ```
 
@@ -63,14 +76,19 @@ Issue The body must include the following items.
 | fix | fix bug | fix
 | docs | document modification |
 | style | Formatting, Semicolon, etc. Code style |
-| factor | improvement of code structure without change of function |
+| refactor | Structural changes without behavior change |
 | test | Add or modify a test |
 | store | build, setup, other tasks |
 
+### 4.3 Commit Discipline (Tidy First)
+- MUST: Separate structural commits (refactor, style) from behavioral commits (feat, fix)
+- MUST: Ensure all tests pass before committing behavioral changes 
+- MUST NOT: Mix refactoring and feature changes in the same commit
+
 ---
 
-### 4.3 Commit Message Example
-```
+### 4.4 Commit Message Example
+```text
 feat(auth): Implementing the user login function
 ```
 
@@ -79,12 +97,26 @@ feat(auth): Implementing the user login function
 
 ---
 
-## 5. Branch Strategy
+## 5. Branch Strategy (GitHub Flow)
+
+This project follows **GitHub Flow**, a lightweight and production-friendly
+branching strategy.
+
+### Core Principles
+- `main` is always deployable.
+- All changes are made through short-lived feature branches.
+- Every branch is created from `main`.
+- All changes are merged back into `main` via Pull Requests.
+- Direct commits to `main` are NOT allowed.
+
+---
 
 ### 5.1 Branch Naming Convention
+
+- MUST: Create a new branch from `main` for every Issue.
 - MUST: Follow the format below
 
-```
+```bash
 <type>/<issue-number>-<short-description>
 ```
 Example:
@@ -94,8 +126,40 @@ fix/456-auth-token-bug
 refactor/789-cleanup-utils
 ```
 
-Notes:
-- Agent-created branches may be prefixed with `codex/` (e.g., `codex/feat/123-user-login`) to match the agent’s branch prefix requirement.
+### 5.2 AI Agent Branch Prefix Rule
+- Branches created by an AI agent MUST be prefixed with `musinsa/`.
+
+Format:
+```bash
+musinsa/<type>/<issue-number>-<short-description>
+```
+
+Example:
+```bash
+musinsa/feat/123-user-login
+```
+This rule exists to:
+- Clearly distinguish AI-generated branches 
+- Improve traceability during review 
+- Align with evaluation and audit requirements
+
+### 5.3 Branch Lifecycle (GitHub Flow)
+1. Create a branch from main <br/> Example: git checkout -b feat/123-user-login
+2. Commit incremental changes to the branch
+   * Follow Commit Convention rules 
+   * Keep commits small and logical 
+3. Push the branch to the remote repository <br/> Example: git push origin feat/123-user-login
+4. Open a Pull Request targeting main
+   * Follow Pull Request rules 
+   * Link the related Issue 
+5. After review and verification, merge the Pull Request into main 
+6. Delete the branch after merge (recommended)
+
+### 5.4 Restrictions
+- MUST NOT: Commit directly to `main`
+- MUST NOT: Keep long-lived branches 
+- MUST NOT: Reuse branches for multiple Issues 
+- MUST: Use one branch per Issue
 
 ---
 
@@ -103,7 +167,7 @@ Notes:
 
 ### 6.1 Pre-Push Checklist
 - MUST: All tests passed
-- MUST: Commit Convention 준수
+- MUST:Commit conventions are followed
 - MUST: associated Issue number connection
 - MUST: Don't commit unnecessary files
 
@@ -116,7 +180,9 @@ Notes:
 git checkout -b <branch-name>
 
 # Commit
-git add .
+git add <path/to/file1> <path/to/file2>
+# or stage everything explicitly (use with care):
+# git add -A
 git commit -m "<type>(<scope>): <subject>"
 
 # Push

@@ -12,6 +12,12 @@ Why is this change needed? Link context and clarify the goal.
 ./gradlew test
 ```
 
+Optional (if applicable):
+```bash
+# run a narrower target if the change is isolated
+# ./gradlew test --tests '<package.ClassNameTest>'
+```
+
 ## Risk / Rollback
 
 - Risk:
@@ -26,8 +32,8 @@ Why is this change needed? Link context and clarify the goal.
 - [ ] Tests passing
 - [ ] No unrelated files included
 - [ ] Docs updated (if needed)
+- [ ] Followed branch-first workflow (no work on `main`)
 
 ## Issue
 
 Closes #<issue-number>
-

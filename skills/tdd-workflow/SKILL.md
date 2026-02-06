@@ -1,7 +1,13 @@
 ---
-name: tdd-script-skill
-description: Write a feature-specific TDD script (RED→GREEN plan) and keep it in docs/tdd/, before starting implementation.
-version: 1.0
+name: tdd-workflow
+description: Write a feature-specific TDD script (RED→GREEN plan) and keep it in docs/tdd/ before starting implementation.
+version: 1.1
+license: MIT
+compatibility: Java 17+; Gradle projects; docs-driven workflow
+metadata:
+  category: workflow
+  priority: high
+  agent-safe: true
 ---
 
 # TDD Script Skill

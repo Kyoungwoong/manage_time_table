@@ -1,22 +1,116 @@
 ---
 name: assessment-context-skill
-description: Capture MCP problem statements, constraints, and follow-up questions before coding in a time-limited assessment.
+description: Normalize and record problem context from repository files and user-provided instructions before planning or coding in time-limited assessments.
+version: 1.0
+license: MIT
+compatibility: GitHub-based repositories; file-driven problem statements
+metadata:
+  category: context
+  priority: high
+  agent-safe: true
 ---
 
-# Context 정리 Skill
+# Assessment Context Skill
 
 ## Goal
-모든 작업에 앞서 MCP에서 받은 문제 설명, 예제, 제약 조건을 한눈에 파악할 수 있도록 정리한다. 이후 계획/코딩/테스트 단계에서 논리적 흐름을 놓치지 않도록 돕는다.
+
+Before any planning or coding begins, this skill ensures that the problem context
+is clearly understood, normalized, and explicitly recorded.
+
+It exists to prevent misunderstandings, missed constraints, and hidden assumptions
+when working under time pressure.
+
+This skill produces **shared understanding**, not a solution.
+
+---
+
+## When to Use
+
+- Immediately after receiving a problem description
+- Before entering **Plan Mode**
+- Before creating or updating `plan.md`
+
+---
+
+## Inputs
+
+This skill operates **only** on the following inputs:
+- Repository files (e.g., `PROBLEM.md`, `README.md`, `TODO.md`)
+- GitHub Issues provided for the task
+- User-provided instructions or clarifications
+
+No external systems or hidden sources are assumed.
+
+---
 
 ## Workflow
-1. README, TODO, MCP 문서를 빠르게 읽고 문제 목적, 입력/출력, 제약 조건을 한 문단으로 요약해 README 또는 작업 코멘트에 기록한다.
-2. 이해가 불확실한 부분은 `질문/확인 필요` 항목으로 모아서 평가자 또는 MCP에 다시 문의할 질문을 정리한다.
-3. 필요한 추가 예제를 `mcp` 명령으로 받아 `EXAMPLE.md` 등에 저장하고, 핵심 케이스를 간단히 요약해 둔다.
-4. 시간/메모리/데이터 크기 제약과 핵심 로직 흐름을 도식화(간단한 리스트/표/순서도)하여 머릿속으로 전체 구조를 가늠한다.
-5. 정리된 내용을 토대로 README TODO를 업데이트하고 `skills/problem-solving.md`, `skills/testing.md`에 따라 이후 단계를 진행한다.
 
-## Handoff
-- 새로운 정보를 얻을 때마다 이 문서를 다시 참조하여 요약을 갱신하고 질문 목록을 좁힌다.
-- 시작 전에 나온 가정(입력 범위, 정렬된 여부 등)을 명시적으로 적어두고, 코드/테스트 단계에서 다시 검증한다.
+1. Read all provided problem-related files.
+   Summarize the problem objective, inputs, outputs, and constraints
+   into a short, clear paragraph.
 
-이 Skill은 타임박스된 테스트에서 요구사항을 놓치지 않도록 도와준다.
+2. Identify and explicitly list any ambiguous, missing, or unclear points
+   under a **Questions / Clarifications Needed** section.
+
+3. Extract and record constraints that affect solution design, such as:
+    - Time or memory limits
+    - Input size or data volume
+    - Ordering guarantees or lack thereof
+    - Error handling expectations
+
+4. If examples are provided, extract only the essential patterns
+   and edge cases for quick reference.
+   Raw examples may be stored separately if needed.
+
+5. Write down all assumptions explicitly
+   (e.g., input bounds, uniqueness, sorting guarantees).
+
+6. Organize the above into a concise context summary
+   that can be referenced during planning and development.
+
+---
+
+## Outputs
+
+- A concise, human-readable context summary
+- A clear list of assumptions
+- A clear list of open questions or uncertainties
+
+This output may be written into:
+- A working note
+- A dedicated context file
+- Or another appropriate location, as determined by the agent
+
+---
+
+## Handoff Rules
+
+- This skill does NOT define implementation strategy.
+- This skill does NOT create `plan.md`.
+- This skill does NOT authorize test writing or coding.
+
+Its sole purpose is to ensure that the agent and the user
+share the same understanding of the problem **before** planning begins.
+
+Any new information discovered later MUST be reflected
+back into the context summary.
+
+---
+
+## Non-Goals
+
+- Designing architecture
+- Defining execution steps
+- Writing tests
+- Writing production code
+
+Those activities belong to subsequent phases.
+
+---
+
+## Final Principle
+
+If the problem is not clearly understood,
+**planning and coding MUST NOT begin**.
+
+Clarity precedes correctness.
