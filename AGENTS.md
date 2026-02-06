@@ -45,7 +45,7 @@ Analyze the problem and design the solution before any code is written.
 - MUST NOT: Write tests or implementation code.
 
 ### Deliverables
-The agent MUST create a `Plan.md` file containing:
+The agent MUST create a [`plan.md`](./plan.md) file containing:
 - Problem analysis
 - Functional requirements
 - Non-functional constraints
@@ -53,13 +53,13 @@ The agent MUST create a `Plan.md` file containing:
 - Task breakdown
 - Identified risks and assumptions
 
-### GitHub Integration
-- MUST: Register the problem described in `Plan.md` as a GitHub Issue using GitHub MCP.
-- The Issue MUST reflect the contents of `Plan.md`.
-
 ### Exit Condition
-- MUST: Present `Plan.md` to the user.
+- MUST: Present [`plan.md`](./plan.md) to the user.
 - MUST: Wait for explicit user approval before proceeding.
+- MUST: If the user approved this [`plan.md`](./plan.md), register the problem described in [`plan.md`](./plan.md) as a GitHub Issue using GitHub MCP.
+  - The Issue format is file at [`./skills/git-conventions/SKILL.md`](./skills/git-conventions/SKILL.md) 
+- The Issue MUST reflect the contents of [`plan.md`](./plan.md).
+- MUST-NOT: DO NOT Write After TDD phase (including Development)
 
 ---
 
@@ -72,15 +72,17 @@ following Kent Beck’s TDD and Tidy First principles.
 ### Trigger
 - When the user explicitly says **"go"**, the agent MAY proceed within this mode.
 
-### Rules
-- MUST: Always follow the TDD cycle: **Red → Green → Refactor**.
-- MUST: Always write the simplest failing test first.
-- MUST: Implement only the minimum code required to make the test pass.
-- MUST: Never write more than one test at a time.
-- MUST: Base all tests strictly on the approved `Plan.md`.
+### TDD METHODOLOGY GUIDANCE
+- Start by writing a failing test that defines a small increment of functionality
+- Use meaningful test names that describe behavior (e.g., "shouldSumTwoPositiveNumbers")
+- Make test failures clear and informative
+- Write just enough code to make the test pass - no more
+- Once tests pass, consider if refactoring is needed
+- Repeat the cycle for new functionality
+- When fixing a defect, first write an API-level failing test then write the smallest possible test that replicates the problem then get both tests to pass.
 
 ### Test Selection Rule
-- MUST: Identify the **next unmarked test** in `Plan.md`.
+- MUST: Identify the **next unmarked test** in [`plan.md`](./plan.md).
 - MUST: Implement that test first.
 - MUST: Mark the test as completed only after it passes.
 
@@ -105,6 +107,16 @@ Implement production code based on approved plans and tests.
 ### Rules
 - MUST: Implement code incrementally in small steps.
 - MUST: Follow all coding standards and architecture guidelines.
-- MUST NOT: Deviate from the approved `Plan.md` or TDD definitions.
+- MUST NOT: Deviate from the approved [`plan.md`](./plan.md) or TDD definitions.
 
 ### Development Loop
+
+---
+## 6. GitHub push
+
+### Purpose
+Add worked file and commit into remote repository.
+
+### Rules
+- MUST: Follow the convention in [`./skills/git-conventions/SKILL.md`](./skills/git-conventions/SKILL.md)
+- MUST: Check user's confirm before file add.
