@@ -1,88 +1,110 @@
----
-name: development-workflow
-Description: Development workflow for AI agents. A systematic development process including Plan mode analysis, TDD-based development, and self-verification loops.
----
+# AGENTS.md
 
-# Development Workflow
+This document defines how the AI agent MUST behave during all development work.
+The agent is not autonomous. All development is approval-driven, phase-based,
+and strictly controlled by this protocol.
 
-## core principles
-- **Be sure to get confirmation from the user before all development work**
-- **Proceed step by step and obtain approval after completion of each step**
+The agent MUST follow these rules at all times.
 
 ---
 
-## Phase 1: Analysis and Planning (Plan Mode)
+## 1. Global Rules (Always Applied)
 
-### 1.1 Requirements Analysis
-1. Break down user requests in units
-2. Organize what you want each unit to develop
-3. Derive problem situations and solutions
-
-### 1.2 Register GitHub Issue
-- Register analyzed problem situations as Issue
-- For more information on Git, see the '@git-workflow' skill
-
-### 1.3 Create Plan.md
-```markdown
-# Plan: [Function name]
-
-## 1. Planning Analysis
-- Purpose:
-- User Scenario:
-- Constraints:
-
-## 2. Development Design
-- Architecture:
-- Required Modules/Files:
-- Data Flow:
-
-## 3. Work unit decomposition
-- [ ] Task 1: ...
-- [ ] Task 2: ...
-
-## 4. Expected Risk
-- ...
-```
-⚠️ Proceed to the next step after user approval
-
-## Phase 2: TDD (Test-Driven Development)
-### 2.1 TDD Cycle
-```
-RED → GREEN → REFACTOR → REPEAT
-```
-### 2.2 Checklist
-- [ ] Test presence for all requirements
-- [ ] Includes edge case test
-- [ ] Include error handling tests
-  ⚠️ Continue developing until the user says "OK"
----
-
-## Phase 3: 개발 (Development Loop)
-### 3.1 Development Loop
-```
-Write code → Self-verify → Test → Repeat on failure
-```
-
-### 3.2 Self-Verification Items
-- [ ] Code Style / Convention Compliance
-- [ ] Error handling appropriate
-- [ ] No performance issues
-  ⚠️ Proceed to the next step after passing all tests
-
-## Phase 4: Git Push
-Push according to @git-workflow skill when all tests pass
-
-## Workflow Summary
-```
-[1] Analysis → Issue → Plan.md → Approve
-[2] TDD → Test Creation → Repeat until approval
-[3] Development → Self-Verify → Test → Repeat to Pass
-[4] Git Push (@git-workflow) → 완료
-```
-## an important rule
-* never proceed arbitrarily
-* Make sure to get user approval after completion of each phase
-* If anything is missing, I'll report it immediately
-* do not write code without testing
+- MUST: Ask the user for confirmation before starting any development work.
+- MUST: Always follow the instructions defined in [`plan.md`](./plan.md).
+- MUST NOT: Write production code without explicit user approval.
+- MUST NOT: Skip phases or act autonomously.
+- MUST: Stop immediately and ask the user if requirements are unclear or incomplete.
+- MUST: Prioritize correctness, clarity, and user intent over speed.
 
 ---
+
+## 2. Development States (Finite State Machine)
+
+The agent operates strictly in the following states:
+
+1. **Plan Mode**
+2. **TDD Mode**
+3. **Development Mode**
+4. **Verification Mode**
+5. **Git Push Mode**
+
+The agent MUST NOT reorder, skip, or merge states.
+
+---
+
+## 3. Plan Mode (Mandatory Entry State)
+
+### Purpose
+Analyze the problem and design the solution before any code is written.
+
+### Rules
+- MUST: Always start all work in Plan Mode.
+- MUST: Break the problem into clear development units.
+- MUST: Perform planning analysis and development design only.
+- MUST NOT: Write tests or implementation code.
+
+### Deliverables
+The agent MUST create a `Plan.md` file containing:
+- Problem analysis
+- Functional requirements
+- Non-functional constraints
+- Architecture / design decisions
+- Task breakdown
+- Identified risks and assumptions
+
+### GitHub Integration
+- MUST: Register the problem described in `Plan.md` as a GitHub Issue using GitHub MCP.
+- The Issue MUST reflect the contents of `Plan.md`.
+
+### Exit Condition
+- MUST: Present `Plan.md` to the user.
+- MUST: Wait for explicit user approval before proceeding.
+
+---
+
+## 4. TDD Runtime Execution Protocol (TDD Mode)
+
+### Purpose
+Develop functionality using strict Test-Driven Development
+following Kent Beck’s TDD and Tidy First principles.
+
+### Trigger
+- When the user explicitly says **"go"**, the agent MAY proceed within this mode.
+
+### Rules
+- MUST: Always follow the TDD cycle: **Red → Green → Refactor**.
+- MUST: Always write the simplest failing test first.
+- MUST: Implement only the minimum code required to make the test pass.
+- MUST: Never write more than one test at a time.
+- MUST: Base all tests strictly on the approved `Plan.md`.
+
+### Test Selection Rule
+- MUST: Identify the **next unmarked test** in `Plan.md`.
+- MUST: Implement that test first.
+- MUST: Mark the test as completed only after it passes.
+
+### Tidy First Enforcement
+- MUST: Separate changes into:
+  - **Structural changes** (renaming, moving, refactoring)
+  - **Behavioral changes** (new or changed functionality)
+- MUST NOT: Mix structural and behavioral changes in the same commit.
+- MUST: Perform structural changes only when tests are passing.
+
+### Exit Condition
+- MUST: Remain in TDD Mode until the user explicitly approves moving forward.
+- MUST: Ask for approval before leaving TDD Mode.
+
+---
+
+## 5. Development Mode
+
+### Purpose
+Implement production code based on approved plans and tests.
+
+### Rules
+- MUST: Implement code incrementally in small steps.
+- MUST: Follow all coding standards and architecture guidelines.
+- MUST NOT: Deviate from the approved `Plan.md` or TDD definitions.
+
+### Development Loop
