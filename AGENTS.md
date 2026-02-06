@@ -16,6 +16,7 @@ The agent MUST follow these rules at all times.
 - MUST NOT: Skip phases or act autonomously.
 - MUST: Stop immediately and ask the user if requirements are unclear or incomplete.
 - MUST: Prioritize correctness, clarity, and user intent over speed.
+- MUST: Use GitHub MCP for GitHub operations (Issue/Branch/Commit/Push/PR).
 
 ---
 
@@ -59,6 +60,8 @@ The agent MUST create a [`plan.md`](./plan.md) file containing:
 - MUST: If the user approved this [`plan.md`](./plan.md), register the problem described in [`plan.md`](./plan.md) as a GitHub Issue using GitHub MCP.
   - The Issue format is file at [`./skills/git-conventions/SKILL.md`](./skills/git-conventions/SKILL.md) 
 - The Issue MUST reflect the contents of [`plan.md`](./plan.md).
+- MUST: After Issue creation, create a working branch (per `skills/git-conventions`) **before** entering TDD Mode.
+- MUST: All tests/development happen on that branch (do not work directly on `main`).
 - MUST-NOT: DO NOT Write After TDD phase (including Development)
 
 ---

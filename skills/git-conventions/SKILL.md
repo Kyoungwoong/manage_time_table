@@ -94,6 +94,9 @@ fix/456-auth-token-bug
 refactor/789-cleanup-utils
 ```
 
+Notes:
+- Agent-created branches may be prefixed with `codex/` (e.g., `codex/feat/123-user-login`) to match the agent’s branch prefix requirement.
+
 ---
 
 ## 6. Push & Pull Request Workflow
@@ -125,3 +128,25 @@ git push origin <branch-name>
 ```
 Closes #<issue-number>
 ```
+
+### 6.4 Pull Request Title Convention
+- MUST: Follow the same category prefix format as Issues
+```
+[Feature|Bug|Refactor|Docs|Chore] Brief description
+```
+
+### 6.5 Pull Request Body Template (Recommended)
+PR body should include:
+- Background and Purpose
+- What changed (summary bullets)
+- How to test (exact commands / steps)
+- Risk / Rollback plan
+- Non-goals (explicitly out of scope)
+- Checklist
+  - [ ] Tests passing (e.g., `./gradlew test`)
+  - [ ] No unrelated files included
+  - [ ] Docs updated (if needed)
+- Issue connection: `Closes #<issue-number>`
+
+### 6.6 Pull Request Template File
+- Recommended: Add `.github/pull_request_template.md` so GitHub auto-populates PR descriptions.
