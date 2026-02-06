@@ -16,7 +16,9 @@ The agent MUST follow these rules at all times.
 - MUST NOT: Skip phases or act autonomously.
 - MUST: Stop immediately and ask the user if requirements are unclear or incomplete.
 - MUST: Prioritize correctness, clarity, and user intent over speed.
-- MUST: Use GitHub MCP for GitHub operations (Issue/Branch/Commit/Push/PR).
+- MUST: Use GitHub MCP for **Issue/PR creation** and GitHub UI actions (e.g., PR comments/reviews).
+- SHOULD: Use local git for **branch / add / commit / push** to keep local↔remote refs in sync.
+- Fallback: If local git push is blocked (permissions/sandbox/network) or the user explicitly requests it, GitHub MCP MAY be used for push/branch operations.
 
 ---
 
@@ -123,3 +125,7 @@ Add worked file and commit into remote repository.
 ### Rules
 - MUST: Follow the convention in [`./skills/git-conventions/SKILL.md`](./skills/git-conventions/SKILL.md)
 - MUST: Check user's confirm before file add.
+- MUST: Do not develop on `main`; push from the working branch only.
+- MUST: Before starting a new task, sync `main` with `origin/main` (e.g., pull/rebase if the user requests).
+  - IF there are some conflicts, MUST to check the users confirm 
+- NOTE: Use GitHub MCP for Issue/PR creation; use local git for push unless fallback conditions apply.
